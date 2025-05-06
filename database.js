@@ -1,7 +1,6 @@
+require("dotenv").config();
 const { MongoClient } = require("mongodb");
-
-const URI =
-  "mongodb+srv://vyshnavi:sQD0gA6Mq0EiKcTW@cluster0.buvjlyv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const URI = process.env.URI;
 
 const client = new MongoClient(URI);
 
@@ -11,15 +10,14 @@ const user1 = {
   age: 28,
 };
 
-async function run(){
+async function run() {
   try {
-
     // connect to db
     await client.connect();
 
     // database name
     const db = client.db("myApp");
-    await db.command({ ping: 1 }); 
+    await db.command({ ping: 1 });
 
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
@@ -32,12 +30,14 @@ async function run(){
     const insertResult = await collection.insertMany([user1]);
     console.log("Inserted documents =>", insertResult);
 
-   // find all the documents
+    // find all the documents
     const findResult = await collection.find({}).toArray();
     console.log("Found documents =>", findResult);
 
     // find one document with filter query
-    const filteredDocs = await collection.find({ first_name: "vyshnavi" }).toArray();
+    const filteredDocs = await collection
+      .find({ first_name: "vyshnavi" })
+      .toArray();
     console.log("Found documents filtered by first_name =>", filteredDocs);
 
     // update the document
@@ -52,12 +52,11 @@ async function run(){
       first_name: "xyz",
     });
     console.log("Deleted documents =>", deleteResult);
-
   } catch (error) {
     console.log(error);
   } finally {
     // close the connection after the operation
-    await client.close()
+    await client.close();
   }
 }
 
